@@ -15,46 +15,54 @@ public class Car implements Runnable{
 	public void load(){
 		tryLoad();
 		Driver.readyToBoard = true;
+		//Driver.running = false;
+		Driver.readyToUnboard = false;
 		System.out.println("Car is LOADING");
 		notifyPToBoard();
 	}
 
 	public void carRun(){
 		tryCarRun();
-		Driver.readyToBoard = true;
-		Driver.running = true;
+		Driver.readyToBoard = false;
+		//Driver.running = true;
 		System.out.println("Car is RUNNING");
 	}
 	
 	public void unload(){
+		//Driver.running = false;
+		Driver.readyToUnboard = true;
 		System.out.println("Car is UNLOADING");
 		notifyPToUnboard();
 	}
 	
 	public void tryLoad(){
+		Driver.lock.lock();
 		try{
 			while(Driver.numOfBoarded > 0)
-				Driver.car.await();
+				Driver.carLoad.await();
 		}catch(InterruptedException e){
 			System.out.println("Error in tryLoad - monitor");
 		}
+		Driver.lock.unlock();
 	}
 	
 	public void notifyPToBoard(){
-		Driver.passenger.signalAll();
+		Driver.passengerBoard.signalAll();
 	}
 	
 	public void tryCarRun(){
+		Driver.lock.lock();
 		try{
 			while(Driver.numOfBoarded < Driver.numSeat)
-				Driver.run.await();
+				Driver.carRun.await();
 		}catch(InterruptedException e){
 			System.out.println("Error in tryCarRun - monitor");
 		}
+		Driver.lock.unlock();
 	}
 	
 	public void notifyPToUnboard(){
-			Driver.board.signalAll();
+			Driver.passengerUnboard.signalAll();
 	}
 	
 

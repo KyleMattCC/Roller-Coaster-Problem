@@ -19,48 +19,46 @@ public class Passenger implements Runnable{
 	public void board(){
 		tryBoard();
 		System.out.println("Passenger " + passengerID + " BOARDING");
-		Driver.numOfBoarded++;
 		notifyCToRun();
 	}
 	
 	public void unboard(){
 		tryUnboard();
 		System.out.println("Passenger " + passengerID + " UNBOARDING");
-		Driver.numOfBoarded--;
 		notifyCToLoad();
 	}
 	
 	public void tryBoard(){
 		Driver.lock.lock();
 		try{
-			while(Driver.readyToBoard == false)
-				Driver.passenger.await();
+			while(Driver.readyToBoard == false && Driver.numOfBoarded > Driver.numSeat)
+				Driver.passengerBoard.await();
 		}catch(InterruptedException e){
 			System.out.println("Error in tryBoard - monitor");
-		}finally{
-			Driver.lock.unlock();
 		}
+		Driver.numOfBoarded++;
+		Driver.lock.unlock();
 	}
 	
 	public void notifyCToRun(){
 		if(Driver.numOfBoarded == Driver.numSeat)
-			Driver.run.signal();
+			Driver.carRun.signal();
 	}
 	
 	public void tryUnboard(){
 		Driver.lock.lock();
 		try{
-			while(Driver.running)
-				Driver.board.await();
+			while(Driver.readyToUnboard == false)
+				Driver.passengerUnboard.await();
 		}catch(InterruptedException e){
 			System.out.println("Error in tryUnboard - monitor");
-		}finally{
-			Driver.lock.unlock();
 		}
+		Driver.numOfBoarded--;
+		Driver.lock.unlock();
 	}
 	
 	public void notifyCToLoad(){
 		if(Driver.numOfBoarded == 0)
-			Driver.car.signal();
+			Driver.carLoad.signal();
 	}
 }
