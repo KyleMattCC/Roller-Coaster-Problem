@@ -15,6 +15,7 @@ public class Car implements Runnable{
 	public void load(){
 		tryLoad();
 		Driver.readyToBoard = true;
+		System.out.println("Car is LOADING");
 		notifyPToBoard();
 	}
 
@@ -22,22 +23,20 @@ public class Car implements Runnable{
 		tryCarRun();
 		Driver.readyToBoard = true;
 		Driver.running = true;
+		System.out.println("Car is RUNNING");
 	}
 	
 	public void unload(){
+		System.out.println("Car is UNLOADING");
 		notifyPToUnboard();
 	}
 	
 	public void tryLoad(){
-		Driver.lock.lock();
-		
 		try{
 			while(Driver.numOfBoarded > 0)
 				Driver.car.await();
 		}catch(InterruptedException e){
 			System.out.println("Error in tryLoad - monitor");
-		}finally{
-			Driver.lock.unlock();
 		}
 	}
 	
@@ -46,14 +45,11 @@ public class Car implements Runnable{
 	}
 	
 	public void tryCarRun(){
-		Driver.lock.lock();
 		try{
 			while(Driver.numOfBoarded < Driver.numSeat)
 				Driver.run.await();
 		}catch(InterruptedException e){
 			System.out.println("Error in tryCarRun - monitor");
-		}finally{
-			Driver.lock.unlock();
 		}
 	}
 	

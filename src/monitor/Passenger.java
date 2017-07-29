@@ -2,6 +2,12 @@ package monitor;
 
 public class Passenger implements Runnable{
 	
+	private int passengerID;
+	
+	public Passenger(int ID){
+		this.passengerID = ID;
+	}
+	
 	@Override
 	public void run(){
 		while(true){
@@ -12,12 +18,14 @@ public class Passenger implements Runnable{
 	
 	public void board(){
 		tryBoard();
+		System.out.println("Passenger " + passengerID + " BOARDING");
 		Driver.numOfBoarded++;
 		notifyCToRun();
 	}
 	
 	public void unboard(){
 		tryUnboard();
+		System.out.println("Passenger " + passengerID + " UNBOARDING");
 		Driver.numOfBoarded--;
 		notifyCToLoad();
 	}
