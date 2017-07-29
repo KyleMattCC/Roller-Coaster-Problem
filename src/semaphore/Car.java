@@ -11,8 +11,9 @@ public class Car implements Runnable{
 	
 	public void load(){
 		try {
-			Driver.canLoad.acquire(1);
-			Driver.availableSeat.release(numSeat);
+			SharedVariables.canLoad.acquire(1);
+			SharedVariables.availableSeat.release(numSeat);
+			System.out.println("Car is loading...");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			
@@ -23,7 +24,8 @@ public class Car implements Runnable{
 	
 	public void carRun(){
 		try {
-			Driver.cartFull.acquire(1);
+			SharedVariables.cartFull.acquire(1);
+			System.out.println("Car is running");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Error in carRun - semaphore");
@@ -33,12 +35,17 @@ public class Car implements Runnable{
 	}
 	
 	public void unload(){
-		Driver.canUnboard.release(numSeat);
+		System.out.println("Car is unloading");
+		SharedVariables.canUnboard.release(numSeat);
 	}
 	
 	@Override
 	public void run(){
-		
+		while(true){
+			load();
+			carRun();
+			unload();
+		}
 	}
 	
 
