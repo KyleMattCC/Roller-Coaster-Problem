@@ -1,8 +1,6 @@
 package semaphore;
 
-
 public class Car implements Runnable{
-	
 	private int numSeat;
 	
 	public Car(int numSeat){
@@ -11,9 +9,10 @@ public class Car implements Runnable{
 	
 	public void load(){
 		try {
-			SharedVariables.canLoad.acquire(1);
-			SharedVariables.availableSeat.release(numSeat);
+			Driver.canLoad.acquire(1);
+			Driver.availableSeat.release(numSeat);
 			System.out.println("Car is loading...");
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			
@@ -24,8 +23,9 @@ public class Car implements Runnable{
 	
 	public void carRun(){
 		try {
-			SharedVariables.cartFull.acquire(1);
+			Driver.cartFull.acquire(1);
 			System.out.println("Car is running");
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Error in carRun - semaphore");
@@ -36,7 +36,7 @@ public class Car implements Runnable{
 	
 	public void unload(){
 		System.out.println("Car is unloading");
-		SharedVariables.canUnboard.release(numSeat);
+		Driver.canUnboard.release(numSeat);
 	}
 	
 	@Override
@@ -47,7 +47,5 @@ public class Car implements Runnable{
 			unload();
 		}
 	}
-	
-
-
 }
+

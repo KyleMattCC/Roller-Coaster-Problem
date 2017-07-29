@@ -3,8 +3,8 @@ package semaphore;
 import java.util.concurrent.Semaphore;
 
 public class SharedVariables {
-	protected int numSeat;
-	protected int numBoarded = 0;
+	protected static volatile int numSeat;
+	protected static volatile int numBoarded = 0;
 	
 	protected static Semaphore availableSeat; //changed numberofSeats to availableSeats
 	protected static Semaphore cartFull;
