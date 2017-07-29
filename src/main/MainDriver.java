@@ -12,7 +12,6 @@ public class MainDriver {
 		System.out.print("Choice: ");
 		int choice = sc.nextInt();
 		
-		
 		do{
 		System.out.print("Enter number of seats: ");
 		numSeat = sc.nextInt();
