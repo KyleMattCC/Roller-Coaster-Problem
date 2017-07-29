@@ -5,16 +5,23 @@ import java.util.Scanner;
 public class MainDriver {
 	public static void main(String[] args){
 		Scanner sc = new Scanner(System.in);
+		int numSeat, numPassenger;
 		System.out.println("1 - Semaphores");
 		System.out.println("2 - Monitors");
 		
+		System.out.print("Choice: ");
 		int choice = sc.nextInt();
 		
 		
-		System.out.println("Enter number of seats: ");
-		int numSeat = sc.nextInt();
-		System.out.println("Enter number of passengers: ");
-		int numPassenger = sc.nextInt();
+		do{
+		System.out.print("Enter number of seats: ");
+		numSeat = sc.nextInt();
+		System.out.print("Enter number of passengers: ");
+		numPassenger = sc.nextInt();
+		
+		if(!(numSeat < numPassenger))
+			System.out.println("The number of seats should be less than the number of passengers.\n");
+		}while(!(numSeat < numPassenger));
 		
 		if(choice == 1){
 			semaphore.Driver semaphoreDriver = new semaphore.Driver(numSeat, numPassenger);
