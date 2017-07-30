@@ -7,15 +7,23 @@ public class Car implements Runnable{
 		this.numSeat = numSeat;
 	}
 	
+	@Override
+	public void run(){
+		while(!Driver.exit){
+			load();
+			carRun();
+			unload();
+		}
+	}
+	
 	public void load(){
 		try {
 			Driver.canLoad.acquire(1);
 			Driver.availableSeat.release(numSeat);
 			System.out.println("Car is loading...");
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			
+			Thread.sleep(500);
+		} catch (InterruptedException e) {		
 			System.out.println("Error in load - semaphore");
 			e.printStackTrace();
 		}
@@ -25,9 +33,9 @@ public class Car implements Runnable{
 		try {
 			Driver.cartFull.acquire(1);
 			System.out.println("Car is running");
+			
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Error in carRun - semaphore");
 			e.printStackTrace();
 		}
@@ -35,17 +43,15 @@ public class Car implements Runnable{
 	}
 	
 	public void unload(){
-		System.out.println("Car is unloading");
-		Driver.canUnboard.release(numSeat);
-	}
-	
-	@Override
-	public void run(){
-		while(true){
-			load();
-			carRun();
-			unload();
-		}
+		try{
+			System.out.println("Car is unloading");
+			Driver.canUnboard.release(numSeat);
+			
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			System.out.println("Error in carRun - semaphore");
+			e.printStackTrace();
+		}	
 	}
 }
 
