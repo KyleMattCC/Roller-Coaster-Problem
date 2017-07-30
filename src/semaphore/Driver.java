@@ -14,6 +14,7 @@ public class Driver {
 	protected static volatile int numSeat;
 	protected static volatile int numBoarded = 0;
 	protected static int numPassenger;
+	private static int passengerPerTime;
 	
 	protected static Semaphore availableSeat; //changed numberofSeats to availableSeats
 	protected static Semaphore cartFull;
@@ -23,8 +24,8 @@ public class Driver {
 	
 	private Thread car;
 	private Thread passenger;
-	private List<Thread> passengerList = new ArrayList<Thread>();
-	protected static volatile boolean [] starveList;
+	private static List<Thread> passengerList = new ArrayList<Thread>();
+	protected static volatile List<Boolean> starveList = new ArrayList<Boolean>();
 	protected static volatile boolean exit;
 	private fixedTimer timer;
 	
@@ -32,12 +33,15 @@ public class Driver {
 		
 		Driver.numPassenger = numPassenger;
 		Driver.numSeat = numSeat;
-		starveList = new boolean[numPassenger];
-		for(int ctr = 0; ctr< numPassenger; ctr++){
-			starveList[ctr] = true;
-		}
-		exit = false;
 		timer = new fixedTimer(1);
+	}
+	
+	public Driver(int numSeat, int numPassenger, int timeLimit, int numPassengerPerTime){
+		
+		Driver.numSeat = numSeat;
+		Driver.numPassenger = numPassenger;
+		Driver.passengerPerTime = numPassengerPerTime;
+		timer = new fixedTimer(3, timeLimit);
 	}
 	
 	public void execute(){
@@ -46,19 +50,20 @@ public class Driver {
 		deadlockDetector.start();
 		timer.start();
 		
-		rollercoasterInitialize();
+		rollerCoasterInitialize();
 		startThreads();
 		while(!Driver.exit);
 		try{
 			Thread.sleep(1250);
-			System.out.println("Program has ended!");
-			System.out.println("Starvations: " + semaphore.Driver.getStarvations());
+			System.out.println("---------------Program has ended!---------------");
+			System.out.println("Total passenger: " + semaphore.Driver.numPassenger);
+			System.out.println("Starvations: " + getStarvations());
 		}catch (InterruptedException e){
 			e.printStackTrace();
 		}
 	}
 	
-	public void rollercoasterInitialize(){
+	public void rollerCoasterInitialize(){
 		
 		availableSeat = new Semaphore(0, true);
 		cartFull = new Semaphore(0, true);
@@ -70,10 +75,27 @@ public class Driver {
 		for(int ctr = 1; ctr <= numPassenger; ctr++){
 			passenger = new Thread(new Passenger(ctr));
 			passengerList.add(passenger);
+			starveList.add(true);
+		}
+		
+		exit = false;
+	}
+	
+	public static void createPassengers(){
+		
+		System.out.println("************Creating NEW passengers************");
+		for(int ctr = 0; ctr < passengerPerTime; ctr++){
+			numPassenger++;
+			Thread newPassenger = new Thread();
+			newPassenger = new Thread(new Passenger(numPassenger));
+			newPassenger.start();
+			passengerList.add(newPassenger);
+			starveList.add(true);
 		}
 	}
 	
 	public void startThreads(){
+		
 		car.start();
 		
 		for(int ctr = 0; ctr < numPassenger; ctr++){
@@ -81,11 +103,12 @@ public class Driver {
 		}
 	}
 	
-	public static int getStarvations(){
+	public int getStarvations(){
+		
 		int starve = 0;
 		
 		for(int ctr = 0; ctr < numPassenger; ctr++){
-			if(starveList[ctr])
+			if(starveList.get(ctr))
 				starve++;
 		}
 		
@@ -93,6 +116,7 @@ public class Driver {
 	}
 	
 	public static void exitProgram(){
+		
 		exit = true;
 	}
 }

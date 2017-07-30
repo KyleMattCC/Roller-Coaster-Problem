@@ -37,7 +37,7 @@ public class Passenger implements Runnable{
 				System.out.println("Error in tryBoard - monitor");
 			} finally{
 				Driver.numOfBoarded++;
-				Driver.starveList[passengerID-1] = false;
+				Driver.starveList.set(passengerID-1, false);
 				System.out.println("Passenger " + passengerID + " BOARDING");
 				Driver.lock.unlock();
 			}

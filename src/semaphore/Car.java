@@ -22,7 +22,7 @@ public class Car implements Runnable{
 			Driver.availableSeat.release(numSeat);
 			System.out.println("Car is loading...");
 			
-			Thread.sleep(500);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {		
 			System.out.println("Error in load - semaphore");
 			e.printStackTrace();
@@ -34,7 +34,7 @@ public class Car implements Runnable{
 			Driver.cartFull.acquire(1);
 			System.out.println("Car is running");
 			
-			Thread.sleep(500);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			System.out.println("Error in carRun - semaphore");
 			e.printStackTrace();
@@ -47,7 +47,7 @@ public class Car implements Runnable{
 			System.out.println("Car is unloading");
 			Driver.canUnboard.release(numSeat);
 			
-			Thread.sleep(500);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			System.out.println("Error in carRun - semaphore");
 			e.printStackTrace();

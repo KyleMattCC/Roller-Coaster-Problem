@@ -13,7 +13,8 @@ import timer.fixedTimer;
 public class Driver {
 	protected static int numSeat;
 	protected static volatile int numOfBoarded = 0;
-	private final int numPassenger;
+	private static int numPassenger;
+	private static int passengerPerTime;
 
 	protected static Condition carLoad, carRun, passengerBoard, passengerUnboard;
 	protected static ReentrantLock lock;
@@ -22,30 +23,28 @@ public class Driver {
 
 	private Thread cars;
 	private Thread passengers;
-	private List<Thread> passengerList = new ArrayList<Thread>();
-	protected static volatile boolean [] starveList;
+	private static List<Thread> passengerList = new ArrayList<Thread>();
+	protected static volatile List<Boolean> starveList = new ArrayList<Boolean>();
 	protected static volatile boolean exit;
 	private fixedTimer timer;
 	
 	public Driver(int numSeat, int numPassenger){
-		this.numPassenger = numPassenger;
+		
+		Driver.numPassenger = numPassenger;
 		Driver.numSeat = numSeat;
-		lock = new ReentrantLock(true);
-		readyToBoard = false;
-		readyToUnboard = false;
-		carLoad = lock.newCondition();
-		carRun = lock.newCondition();
-		passengerBoard = lock.newCondition();
-		passengerUnboard = lock.newCondition();
-		starveList = new boolean[numPassenger];
-		for(int ctr = 0; ctr< numPassenger; ctr++){
-			starveList[ctr] = true;
-		}
-		exit = false;
 		timer = new fixedTimer(2);
 	}
 	
+	public Driver(int numSeat, int numPassenger, int timeLimit, int numPassengerPerTime){
+		
+		Driver.numSeat = numSeat;
+		Driver.passengerPerTime = numPassengerPerTime;
+		Driver.numPassenger = numPassenger;
+		timer = new fixedTimer(4, timeLimit);
+	}
+	
 	public void execute(){
+		
 		DeadlockDetector deadlockDetector = new DeadlockDetector(new DeadlockConsoleHandler(), 5, TimeUnit.SECONDS);
 		deadlockDetector.start();
 		timer.start();
@@ -55,19 +54,43 @@ public class Driver {
 		while(!Driver.exit);
 		try{
 			Thread.sleep(1250);
-			System.out.println("Program has ended!");
-			System.out.println("Starvations: " + semaphore.Driver.getStarvations());
+			System.out.println("---------------Program has ended!---------------");
+			System.out.println("Total passenger: " + monitor.Driver.numPassenger);
+			System.out.println("Starvations: " + getStarvations());
 		}catch (InterruptedException e){
 			e.printStackTrace();
 		}
 	}
 	
 	public void rollercoasterInitialize(){
+		lock = new ReentrantLock(true);
+		readyToBoard = false;
+		readyToUnboard = false;
+		carLoad = lock.newCondition();
+		carRun = lock.newCondition();
+		passengerBoard = lock.newCondition();
+		passengerUnboard = lock.newCondition();
 		cars = new Thread(new Car());
 		
 		for(int ctr = 1; ctr <= numPassenger; ctr++){
 			passengers = new Thread(new Passenger(ctr));
 			passengerList.add(passengers);
+			starveList.add(true);
+		}
+		
+		exit = false;
+	}
+	
+	public static void createPassengers(){
+		
+		System.out.println("************Creating NEW passengers************");
+		for(int ctr = 0; ctr < passengerPerTime; ctr++){
+			numPassenger++;
+			Thread newPassenger = new Thread();
+			newPassenger = new Thread(new Passenger(numPassenger));
+			newPassenger.start();
+			passengerList.add(newPassenger);
+			starveList.add(true);
 		}
 	}
 	
@@ -83,7 +106,7 @@ public class Driver {
 		int starve = 0;
 		
 		for(int ctr = 0; ctr < numPassenger; ctr++){
-			if(starveList[ctr])
+			if(starveList.get(ctr))
 				starve++;
 		}
 		

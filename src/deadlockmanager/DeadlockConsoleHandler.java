@@ -1,7 +1,6 @@
 package deadlockmanager;
 
 import java.lang.management.ThreadInfo;
-import java.util.Map;
 
 public class DeadlockConsoleHandler implements DeadlockHandler {
 
@@ -10,7 +9,6 @@ public class DeadlockConsoleHandler implements DeadlockHandler {
 	    if (deadlockedThreads != null) {
 	      System.err.println("Deadlock detected!");
 	      
-	      Map<Thread, StackTraceElement[]> stackTraceMap = Thread.getAllStackTraces();
 	      for (ThreadInfo threadInfo : deadlockedThreads) {
 	      
 	        if (threadInfo != null) {
