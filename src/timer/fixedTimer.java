@@ -50,7 +50,7 @@ public class fixedTimer {
 	
 	public fixedTimer(int choice){
 		this.driverChoice = choice;
-		time = 10000;
+		time = 30000;
 	}
 	
 	public fixedTimer(int choice, long timeInSeconds){

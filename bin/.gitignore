@@ -1,2 +1,7 @@
-/threads/
 /main/
+/monitor/
+/semaphore/
+/deadlockDetector/
+/deadlockmanager/
+/timer/
+/timerw/

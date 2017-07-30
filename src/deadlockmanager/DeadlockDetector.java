@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 	  private final DeadlockHandler deadlockHandler;
 	  private final long period;
 	  private final TimeUnit unit;
+	  private int deadlockCount = 0;
 	  private final ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
 	  private final ScheduledExecutorService scheduler = 
 	  Executors.newScheduledThreadPool(1);
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 	        DeadlockDetector.this.mbean.getThreadInfo(deadlockedThreadIds);
 	      
 	        DeadlockDetector.this.deadlockHandler.handleDeadlock(threadInfos);
+	        deadlockCount++;
 	      }
 	    }
 	  };
@@ -40,5 +42,9 @@ import java.util.concurrent.TimeUnit;
 	  public void start() {
 	    this.scheduler.scheduleAtFixedRate(
 	    this.deadlockCheck, this.period, this.period, this.unit);
+	  }
+	  
+	  public int getDeadlockCount(){
+		  return this.deadlockCount;
 	  }
 	}

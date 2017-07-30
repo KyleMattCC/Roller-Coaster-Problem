@@ -28,26 +28,28 @@ public class Driver {
 	protected static volatile List<Boolean> starveList = new ArrayList<Boolean>();
 	protected static volatile boolean exit;
 	private fixedTimer timer;
+	private long deadlockTime;
 	
 	public Driver(int numSeat, int numPassenger){
 		
 		Driver.numPassenger = numPassenger;
 		Driver.numSeat = numSeat;
 		timer = new fixedTimer(1);
+		deadlockTime = 30;
 	}
 	
 	public Driver(int numSeat, int numPassengerPerTime, int timeLimit){
 		
 		Driver.numSeat = numSeat;
 		Driver.numPassenger = numPassengerPerTime;
-		Driver.passengerPerTime = numPassengerPerTime;
-		
+		Driver.passengerPerTime = numPassengerPerTime;	
 		timer = new fixedTimer(3, timeLimit);
+		deadlockTime = timeLimit;
 	}
 	
 	public void execute(){
 		
-		DeadlockDetector deadlockDetector = new DeadlockDetector(new DeadlockConsoleHandler(), 5, TimeUnit.SECONDS);
+		DeadlockDetector deadlockDetector = new DeadlockDetector(new DeadlockConsoleHandler(), deadlockTime, TimeUnit.SECONDS);
 		deadlockDetector.start();
 		timer.start();
 		
@@ -58,6 +60,7 @@ public class Driver {
 			Thread.sleep(1250);
 			System.out.println("---------------Program has ended!---------------");
 			System.out.println("Total passenger: " + semaphore.Driver.numPassenger);
+			System.out.println("Deadlock occurences: " + deadlockDetector.getDeadlockCount());
 			System.out.println("Starvations: " + getStarvations());
 		}catch (InterruptedException e){
 			e.printStackTrace();
