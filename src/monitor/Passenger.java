@@ -91,7 +91,7 @@ public class Passenger implements Runnable{
 			if(Driver.numOfBoarded == 0)
 				Driver.carLoad.signal();
 			
-			
+			Driver.passengerWait.await();
 			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();

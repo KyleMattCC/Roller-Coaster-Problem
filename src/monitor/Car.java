@@ -52,6 +52,7 @@ public class Car implements Runnable{
 		try {
 			Driver.lock.lock();
 			Driver.passengerBoard.signalAll();
+			Driver.passengerWait.signalAll();
 				
 			Thread.sleep(0);
 		} catch (InterruptedException e) {

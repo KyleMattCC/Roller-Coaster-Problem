@@ -16,7 +16,7 @@ public class Driver {
 	private static int numPassenger;
 	private static int passengerPerTime;
 
-	protected static Condition carLoad, carRun, passengerBoard, passengerUnboard;
+	protected static Condition carLoad, carRun, passengerBoard, passengerUnboard, passengerWait;
 	protected static ReentrantLock lock;
 	protected static boolean readyToBoard;
 	protected static boolean readyToUnboard;
@@ -74,6 +74,7 @@ public class Driver {
 		carRun = lock.newCondition();
 		passengerBoard = lock.newCondition();
 		passengerUnboard = lock.newCondition();
+		passengerWait = lock.newCondition();
 		cars = new Thread(new Car());
 		
 		for(int ctr = 1; ctr <= numPassenger; ctr++){
