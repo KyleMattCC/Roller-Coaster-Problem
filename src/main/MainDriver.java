@@ -27,7 +27,7 @@ public class MainDriver {
 				if(!(numSeat < numPassenger))
 					System.out.println("ERROR: The number of seats should be less than the number of passengers.\n");
 		
-				if(choice == 1)
+				else if(choice == 1)
 					new semaphore.Driver(numSeat, numPassenger).execute();
 				else 
 					new monitor.Driver(numSeat, numPassenger).execute();
