@@ -35,11 +35,11 @@ public class Driver {
 		timer = new fixedTimer(2);
 	}
 	
-	public Driver(int numSeat, int numPassenger, int timeLimit, int numPassengerPerTime){
+	public Driver(int numSeat, int numPassengerPerTime, int timeLimit){
 		
 		Driver.numSeat = numSeat;
 		Driver.passengerPerTime = numPassengerPerTime;
-		Driver.numPassenger = numPassenger;
+		Driver.numPassenger = numPassengerPerTime;
 		timer = new fixedTimer(4, timeLimit);
 	}
 	

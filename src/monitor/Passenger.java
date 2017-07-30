@@ -42,7 +42,7 @@ public class Passenger implements Runnable{
 				Driver.lock.unlock();
 			}
 			
-			Thread.sleep(100);
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -54,11 +54,13 @@ public class Passenger implements Runnable{
 			Driver.lock.lock();
 			if(Driver.numOfBoarded == Driver.numSeat)
 				Driver.carRun.signal();
-			Driver.lock.unlock();
 			
-			Thread.sleep(100);
+			
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}finally{
+			Driver.lock.unlock();
 		}
 	}
 	
@@ -77,7 +79,7 @@ public class Passenger implements Runnable{
 				Driver.lock.unlock();
 			}
 			
-			Thread.sleep(100);
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -88,11 +90,13 @@ public class Passenger implements Runnable{
 			Driver.lock.lock();
 			if(Driver.numOfBoarded == 0)
 				Driver.carLoad.signal();
-			Driver.lock.unlock();
 			
-			Thread.sleep(100);
+			
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}finally{
+			Driver.lock.unlock();
 		}
 	}
 }

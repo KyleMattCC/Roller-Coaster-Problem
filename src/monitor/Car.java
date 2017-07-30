@@ -42,7 +42,7 @@ public class Car implements Runnable{
 				Driver.lock.unlock();
 			}
 			
-			Thread.sleep(100);
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -52,11 +52,12 @@ public class Car implements Runnable{
 		try {
 			Driver.lock.lock();
 			Driver.passengerBoard.signalAll();
-			Driver.lock.unlock();
 				
-			Thread.sleep(100);
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}finally{
+			Driver.lock.unlock();
 		}
 	}
 	
@@ -76,7 +77,7 @@ public class Car implements Runnable{
 				Driver.lock.unlock();
 			}
 			
-			Thread.sleep(100);
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -89,11 +90,13 @@ public class Car implements Runnable{
 			Driver.readyToUnboard = true;	
 			Driver.passengerUnboard.signalAll();
 			System.out.println("Car is UNLOADING");
-			Driver.lock.unlock();
+
 			
-			Thread.sleep(100);
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}finally{
+			Driver.lock.unlock();
 		}
 	}
 }
