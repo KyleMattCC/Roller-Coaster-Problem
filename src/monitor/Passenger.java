@@ -10,7 +10,7 @@ public class Passenger implements Runnable{
 	
 	@Override
 	public void run(){
-		while(true){
+		while(!Driver.exit){
 			board();
 			unboard();			
 		}
@@ -18,84 +18,81 @@ public class Passenger implements Runnable{
 	
 	public void board(){
 		tryBoard();
-		System.out.println("Passenger " + passengerID + " BOARDING");
 		notifyCToRun();
 	}
 	
 	public void unboard(){
 		tryUnboard();
-		System.out.println("Passenger " + passengerID + " UNBOARDING");
 		notifyCToLoad();
 	}
 	
 	public void tryBoard(){
-		Driver.lock.lock();
-		try{
-			while(Driver.readyToBoard == false || Driver.numOfBoarded == Driver.numSeat)
-				Driver.passengerBoard.await();
-		}catch(InterruptedException e){
-			System.out.println("Error in tryBoard - monitor");
-		}
-		Driver.numOfBoarded++;
 		
 		try {
+			Driver.lock.lock();
+			try {
+				while(Driver.readyToBoard == false || Driver.numOfBoarded == Driver.numSeat)
+					Driver.passengerBoard.await();
+			} catch(InterruptedException e){
+				System.out.println("Error in tryBoard - monitor");
+			} finally{
+				Driver.numOfBoarded++;
+				Driver.starveList[passengerID-1] = false;
+				System.out.println("Passenger " + passengerID + " BOARDING");
+				Driver.lock.unlock();
+			}
+			
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		Driver.lock.unlock();
 	}
 	
 	public void notifyCToRun(){
-		Driver.lock.lock();
-		if(Driver.numOfBoarded == Driver.numSeat){			
-			Driver.carRun.signal();
-		}
 		
 		try {
+			Driver.lock.lock();
+			if(Driver.numOfBoarded == Driver.numSeat)
+				Driver.carRun.signal();
+			Driver.lock.unlock();
+			
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		Driver.lock.unlock();
 	}
 	
 	public void tryUnboard(){
-		Driver.lock.lock();
-		try{
-			while(Driver.readyToUnboard == false)
-				Driver.passengerUnboard.await();
-		}catch(InterruptedException e){
-			System.out.println("Error in tryUnboard - monitor");
-		}
-		Driver.numOfBoarded--;
 		
 		try {
+			Driver.lock.lock();
+			try {
+				while(Driver.readyToUnboard == false)
+					Driver.passengerUnboard.await();
+			} catch(InterruptedException e){
+				System.out.println("Error in tryUnboard - monitor");
+			} finally{
+				Driver.numOfBoarded--;
+				System.out.println("Passenger " + passengerID + " UNBOARDING");
+				Driver.lock.unlock();
+			}
+			
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		Driver.lock.unlock();
 	}
 	
 	public void notifyCToLoad(){
-		Driver.lock.lock();
-		if(Driver.numOfBoarded == 0)
-			Driver.carLoad.signal();
-		
 		try {
+			Driver.lock.lock();
+			if(Driver.numOfBoarded == 0)
+				Driver.carLoad.signal();
+			Driver.lock.unlock();
+			
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		Driver.lock.unlock();
 	}
 }
