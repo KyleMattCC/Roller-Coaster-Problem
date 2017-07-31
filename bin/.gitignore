@@ -1,7 +1,3 @@
-/main/
+/timer/
 /monitor/
 /semaphore/
-/deadlockDetector/
-/deadlockmanager/
-/timer/
-/timerw/

@@ -1,3 +1,9 @@
+/*Kyle Matthew C. Chua
+ * Mary Louise M. Paragas
+ * Janz Aeinstein F. Villamayor
+ * S11
+ */
+
 package monitor;
 
 import java.util.ArrayList;
@@ -8,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import deadlockmanager.DeadlockConsoleHandler;
 import deadlockmanager.DeadlockDetector;
-import timer.fixedTimer;
+import timer.FixedTimer;
 
 public class Driver {
 	protected static int numSeat;
@@ -26,14 +32,14 @@ public class Driver {
 	private static List<Thread> passengerList = new ArrayList<Thread>();
 	protected static volatile List<Boolean> starveList = new ArrayList<Boolean>();
 	protected static volatile boolean exit;
-	private fixedTimer timer;
+	private FixedTimer timer;
 	private long deadlockTime;
 	
 	public Driver(int numSeat, int numPassenger){
 		
 		Driver.numPassenger = numPassenger;
 		Driver.numSeat = numSeat;
-		timer = new fixedTimer(2);
+		timer = new FixedTimer(2);
 		deadlockTime = 30;
 	}
 	
@@ -42,7 +48,7 @@ public class Driver {
 		Driver.numSeat = numSeat;
 		Driver.passengerPerTime = numPassengerPerTime;
 		Driver.numPassenger = numPassengerPerTime;
-		timer = new fixedTimer(4, timeLimit);
+		timer = new FixedTimer(4, timeLimit);
 		deadlockTime = timeLimit;
 	}
 	

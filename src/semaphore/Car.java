@@ -1,3 +1,9 @@
+/*Kyle Matthew C. Chua
+ * Mary Louise M. Paragas
+ * Janz Aeinstein F. Villamayor
+ * S11
+ */
+
 package semaphore;
 
 public class Car implements Runnable{

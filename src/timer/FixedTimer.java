@@ -1,10 +1,16 @@
+/*Kyle Matthew C. Chua
+ * Mary Louise M. Paragas
+ * Janz Aeinstein F. Villamayor
+ * S11
+ */
+
 package timer;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class fixedTimer {
+public class FixedTimer {
 	
 	private int driverChoice;
 	private long time;
@@ -48,12 +54,12 @@ public class fixedTimer {
 		}
 	};
 	
-	public fixedTimer(int choice){
+	public FixedTimer(int choice){
 		this.driverChoice = choice;
 		time = 30000;
 	}
 	
-	public fixedTimer(int choice, long timeInSeconds){
+	public FixedTimer(int choice, long timeInSeconds){
 		this.driverChoice = choice;
 		this.time = timeInSeconds * 1000;
 	}
