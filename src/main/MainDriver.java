@@ -30,7 +30,7 @@ public class MainDriver {
 		case 2: System.out.print("Enter total number of passengers: ");
 				numPassenger = sc.nextInt();
 			
-				if(!(numSeat < numPassenger))
+				if(numSeat > numPassenger && numPassenger > 0)
 					System.out.println("ERROR: The number of seats should be less than the number of passengers.\n");
 		
 				else if(choice == 1)
